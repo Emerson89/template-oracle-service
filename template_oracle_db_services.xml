@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>4.4</version>
+    <date>2022-01-26T19:14:34Z</date>
+    <groups>
+        <group>
+            <name>Templates</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <template>Template-L-ORACLE</template>
+            <name>Template-L-ORACLE</name>
+            <description>Template de monitoria de ambiente Oracle</description>
+            <groups>
+                <group>
+                    <name>Templates</name>
+                </group>
+            </groups>
+            <applications>
+                <application>
+                    <name>Service</name>
+                </application>
+            </applications>
+            <items>
+                <item>
+                    <name>Oracle: Get instance TPAPD</name>
+                    <key>instance_state[{$INST},{$TPAPDSRV}]</key>
+                    <delay>5m</delay>
+                    <history>8d</history>
+                    <trends>0</trends>
+                    <value_type>TEXT</value_type>
+                    <description>The item gets state of the current instance.</description>
+                    <applications>
+                        <application>
+                            <name>Service</name>
+                        </application>
+                    </applications>
+                    <triggers>
+                        <trigger>
+                            <expression>{regexp(TPAPD2)}=1</expression>
+                            <name>{HOST.NAME} Service {$TPAPDSRV} está rodando na instance {ITEM.LASTVALUE}</name>
+                            <priority>HIGH</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <name>Oracle: Get service TPAPD</name>
+                    <key>service_state[{$INST},{$TPAPDSRV}]</key>
+                    <delay>5m</delay>
+                    <history>8d</history>
+                    <description>The item gets state of the current instance.</description>
+                    <applications>
+                        <application>
+                            <name>Service</name>
+                        </application>
+                    </applications>
+                    <valuemap>
+                        <name>State instance</name>
+                    </valuemap>
+                    <triggers>
+                        <trigger>
+                            <expression>{last()}&lt;&gt;1</expression>
+                            <name>{HOST.NAME} Service {$TPAPDSRV} is down</name>
+                            <priority>HIGH</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+            </items>
+        </template>
+    </templates>
+    <value_maps>
+        <value_map>
+            <name>State instance</name>
+            <mappings>
+                <mapping>
+                    <value>0</value>
+                    <newvalue>DOWN</newvalue>
+                </mapping>
+                <mapping>
+                    <value>1</value>
+                    <newvalue>RUNNING</newvalue>
+                </mapping>
+            </mappings>
+        </value_map>
+    </value_maps>
+</zabbix_export>
